@@ -1,0 +1,16 @@
+[package]
+name = "rustOS"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+# the following code removes all stack unwinding, so the eh_personality language item is not
+# longer required for the build process
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
