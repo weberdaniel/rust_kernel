@@ -5,7 +5,10 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+# we need the bootloader crate to create an image with a bootloader to load our kernel. To make 
+# use of this, we need to install the tool named bootimage
 [dependencies]
+bootloader = "0.9.8"
 
 # the following code removes all stack unwinding, so the eh_personality language item is not
 # longer required for the build process
