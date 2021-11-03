@@ -1,0 +1,5 @@
+name: 'Hello World'
+description: 'A test'
+runs:
+  using: 'docker'
+  image: 'etc/CI-CD/Dockerfile'
