@@ -33,9 +33,8 @@ jobs:
     - name: Install Bootimage
       run: cargo install bootimage
     - name: Build KERNEL IMAGE
-      run: cd kernel; cargo bootimage --verbose
-    - name: Move KERNEL IMAGE
-      run: cp kernel/target/x86_64-rust_kernel/debug/bootimage-rust_kernel.bin
+      run: cd kernel; cargo bootimage --verbose;
+           cp /home/runner/work/rust_kernel/rust_kernel/kernel/target/x86_64-rust_kernel/debug/bootimage-rust_kernel.bin /home/runner/work/rust_kernel/dist
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
