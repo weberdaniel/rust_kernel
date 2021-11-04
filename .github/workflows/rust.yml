@@ -17,7 +17,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install QEMU (X86_64)
-      run: sudo apt-get install qemu-system-x86_64
+      id: qemu
+      uses: docker/setup-qemu-action@v1
+      with:
+        image: tonistiigi/binfmt:latest
+        platforms: all
     - name: Install Target Architecture (ARM Processor)
       run: rustup target add thumbv7em-none-eabihf
     - name: Install Nightly Rust
