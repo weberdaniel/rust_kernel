@@ -21,7 +21,7 @@ jobs:
       uses: docker/setup-qemu-action@v1
       with:
         image: tonistiigi/binfmt:latest
-        platforms: all
+        platforms: x86_64
     - name: Install Target Architecture (ARM Processor)
       run: rustup target add thumbv7em-none-eabihf
     - name: Install Nightly Rust
