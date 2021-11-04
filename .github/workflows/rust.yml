@@ -16,8 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Prepare
+    - name: TargetA
       run: rustup target add thumbv7em-none-eabihf
+    - name: Nightly
       run: rustup override set nightly
     - name: Build
       run: cargo build --verbose
