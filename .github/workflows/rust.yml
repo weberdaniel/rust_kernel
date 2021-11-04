@@ -34,3 +34,5 @@ jobs:
       run: cargo install bootimage
     - name: Build KERNEL IMAGE
       run: cd kernel; cargo bootimage --verbose
+    - name: Execute
+      run: qemu-system-x86_64 -drive format=raw,file=kernel/target/x86_64-rust_kernel/debug/bootimage-rust_kernel.bin
