@@ -16,15 +16,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: TargetA
+    - name: Install QEMU (X86_64)
+      run: sudo apt-get install qemu-system-x86_64
+    - name: Install Target Architecture (ARM Processor)
       run: rustup target add thumbv7em-none-eabihf
-    - name: Nightly
+    - name: Install Nightly Rust
       run: rustup override set nightly
-    - name: Src
+    - name: Install Rust-Src
       run: rustup component add rust-src
-    - name: LLVM-Tools-Preview
+    - name: Install LLVM-Tools-Preview
       run: rustup component add llvm-tools-preview
-    - name: Bootimage
+    - name: Install Bootimage
       run: cargo install bootimage
-    - name: Build
+    - name: Build KERNEL IMAGE
       run: cd kernel; cargo bootimage --verbose
