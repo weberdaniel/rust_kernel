@@ -1,5 +1,0 @@
-FROM alpine:3.10
-
-COPY * /
-
-ENTRYPOINT ["/build.sh"]
