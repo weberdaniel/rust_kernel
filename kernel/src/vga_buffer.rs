@@ -89,4 +89,37 @@ impl Writer {
     }
   }
 
+  // rust strings are utf-8 by default, so they might contain
+  // bytes that are not supported by VGA text buffer.
+  pub fn write_string(&mut self, s: &str) {
+    for byte in s.bytes() {
+      match byte {
+        // printable ASCII byte or newline
+        0x20..=0x7e | b'\n' => self.write_byte(byte),
+        // not part of printable ASCII range
+        _ => self.write_byte(0xfe),
+      }
+    }
+  }
+
   fn new_line(&mut self) { /*TODO*/}
+}
+
+
+// this function creates a writer that points to the VGA buffer
+// at 0x8000. First cast integer to a mutable raw pointer, then
+// convert it to mutable reference by dereferencing it with *
+// and immediately borrow it again trhough &mut. This conversion
+// requires an unsafe block. 
+
+pub fn print_something() {
+  let mut writer = Writer {
+    column_position: 0,
+    color_code: ColorCode::new(Color::Yellow, Color::Black),
+    buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+  };
+
+  writer.write_byte(b'H');
+  writer.write_string("ello ");
+  writer.write_string("Wörld!");
+}
