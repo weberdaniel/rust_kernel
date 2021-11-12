@@ -30,6 +30,8 @@ fn panic(_info: &PanicInfo) -> ! {
 
 static HELLO: &[u8] = b"Hello World!";
 
+mod vga_buffer;
+
 // implement the starting point
 
 #[no_mangle]
