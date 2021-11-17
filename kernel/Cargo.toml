@@ -9,6 +9,7 @@ edition = "2018"
 # use of this, we need to install the tool named bootimage
 [dependencies]
 bootloader = "0.9.8"
+volatile = "0.2.6"
 
 # the following code removes all stack unwinding, so the eh_personality language item is not
 # longer required for the build process

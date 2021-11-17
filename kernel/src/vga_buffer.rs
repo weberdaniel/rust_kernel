@@ -1,5 +1,8 @@
 // normally compiler would warn us about unused enum
 #[allow(dead_code)]
+
+use volatile::Volatile;
+
 // with this we enable copy semantics for the type and ake it printable
 // and comparable
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -24,6 +27,7 @@ pub enum Color {
   Yellow = 14,
   White = 15,
 }
+
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
@@ -54,7 +58,7 @@ const BUFFER_WIDTH: usize = 80;
 // has sae memory layout as its single field
 #[repr(transparent)]
 struct Buffer {
-  chars: [[ScreenChar; BUFFER_WIDTH]; BUFFER_HEIGHT],
+  chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
 }
 
 // to actually write to the screen. A reference to the VGA buffer is
@@ -80,10 +84,10 @@ impl Writer {
         let row = BUFFER_HEIGHT -1;
         let col = self.column_position;
         let color_code = self.color_code;
-        self.buffer.chars[row][col] = ScreenChar {
+        self.buffer.chars[row][col].write(ScreenChar {
           ascii_character: byte,
           color_code,
-        };
+        });
         self.column_position += 1;
       }
     }
@@ -105,6 +109,16 @@ impl Writer {
   fn new_line(&mut self) { /*TODO*/}
 }
 
+use core::fmt;
+use core::fmt::Write;
+
+impl fmt::Write for Writer {
+  fn write_str(&mut self, s: &str) -> fmt::Result {
+    self.write_string(s);
+    Ok(())
+  }
+}
+
 
 // this function creates a writer that points to the VGA buffer
 // at 0x8000. First cast integer to a mutable raw pointer, then
@@ -122,4 +136,5 @@ pub fn print_something() {
   writer.write_byte(b'H');
   writer.write_string("ello ");
   writer.write_string("Wörld!");
+  write!(writer, "The numbers are {} and {}", 42, 1.0/3.0).unwrap();
 }
