@@ -3,6 +3,15 @@
 
 use volatile::Volatile;
 
+// use this for the static WRITER implementation, this mutex does not need
+// an operating system as a basis
+use spin::Mutex;
+
+// use the lazy evaluation fo a static variable, thus initializing it not
+// at compile time, but at the time of first use. This enables to cast
+// raw pointers into references, which is not possible at compile time.
+use lazy_static::lazy_static;
+
 // with this we enable copy semantics for the type and ake it printable
 // and comparable
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -106,7 +115,34 @@ impl Writer {
     }
   }
 
-  fn new_line(&mut self) { /*TODO*/}
+  fn new_line(&mut self) { 
+    for row in 1..BUFFER_HEIGHT {
+      for col in 0..BUFFER_WIDTH {
+        let character = self.buffer.chars[row][col].read();
+        self.buffer.chars[row - 1][col].write(character);
+      }
+    }
+    self.clear_row(BUFFER_HEIGHT - 1);
+    self.column_position = 0;
+  }
+
+  fn clear_row(&mut self, row: usize) { 
+    let blank = ScreenChar {
+      ascii_character: b' ',
+      color_code: self.color_code,
+    };
+    for col in 0..BUFFER_WIDTH {
+      self.buffer.chars[row][col].write(blank);
+    }
+  }
+}
+
+lazy_static! {
+  pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
+    column_position: 0,
+    color_code: ColorCode::new(Color::Yellow, Color::Black),
+    buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+  });
 }
 
 use core::fmt;
@@ -118,7 +154,6 @@ impl fmt::Write for Writer {
     Ok(())
   }
 }
-
 
 // this function creates a writer that points to the VGA buffer
 // at 0x8000. First cast integer to a mutable raw pointer, then
