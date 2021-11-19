@@ -21,6 +21,7 @@ use core::panic::PanicInfo;
 // type denoted by an exclamation mark
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
+  println!("{}", _info);
   loop { }
 }
 
@@ -59,6 +60,8 @@ pub extern "C" fn _start() -> ! {
          // ", some numbers:  {} {}", 42, 1.337).unwrap();
          
   println!("Hello World{}", "!"); 
+
+  panic!("Some panic message");
 
   loop { }
 }
